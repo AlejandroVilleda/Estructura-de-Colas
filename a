@@ -1,0 +1,274 @@
+/*
+	Villeda Patricio Arón Alejandro
+	2BV1 - Estructrua de Datos
+	Instituto Politecnico nacional - ESCOM
+	Ingeniería en Inteligencía Artificial
+*/
+
+//LIBRERIAS USADAS
+#include <iostream>
+#include <queue>
+using namespace std;
+
+void CambiarOrden(queue<string>Primario, queue<string>Secundario, int NumeroValores);
+void RegresarOrden(queue<string>Primario, queue<string>Secundario);
+
+int main()
+{
+
+//VARIABLES
+    queue<string>ColaPrincipal;             //ColaPrincipal: <queue> Es la cola principal
+    queue<string>ColaPrincipalAuxiliar;     //ColaPrincipalAuxiliar: <queue> Es la cola secundaria de la principal
+    queue<string>ColaAuxiliar;              //ColaAuxiliar: <queue> Es la cola auxiliar
+    short int Respuesta;                    //Respuesta: <short int> Lee la seleccion del usuario al menu
+    short int NumeroValores;                //NumeroValores: <short int> Registra el número de elementos total dentro de pila, función similar  a <queue>.size();
+    short int Posicion;                     //Posicion: <short int> Registra la posicion a ingresar dentro de la pila
+    short int NumeroElementosPrincipal;     //NumeroElementosPrincipal: <short int> registra cuantos elementos hay dentro de la cola principal
+    short int NumeroElementosSecundario;    //NumeroElementosSecundario: <short int> registra cuantos elementos hay dentro de la cola secundaria
+    string Palabra;                         //Palabra: <string> Lee el dato a almacenar en ls pilas
+    short int a = 0;
+
+//MENÚ
+    do
+    {
+        system("cls");
+        cout<< "*********************\n";
+        cout<< "\tCOLAS\n";
+        cout<< "*********************\n";
+
+        cout<<"MENU"<< "\t\tElementos ingresados: " << NumeroValores<< endl;
+        cout<<"\t[1]. Agregar palabra al inicio"<< endl;
+        cout<<"\t[2]. Agregar palabra al final"<< endl;
+        cout<<"\t[3]. Agregar palabra en posicion N"<< endl;
+        cout<<"\t[4]. Imprimir de inicio a fin"<< endl;
+        cout<<"\t[5]. Imprimir de fin a inicio"<< endl;
+        cout<<"\t[6]. Eliminar al inicio"<< endl;
+        cout<<"\t[7]. Eliminar al final"<< endl;
+        cout<<"\t[8]. Eliminar en la posicion N"<< endl;
+        cout<<"\t[9]. Salir"<< endl;
+        cout<<"\tRespuesta: ";
+        cin>> Respuesta;
+
+        switch(Respuesta)
+        {
+            case 1:
+            //[1.1] REGISTRO DEL DATO DENTRO DE COLA
+                cout<< "\n\tIngrese el dato: "; cin>> Palabra;
+                ColaPrincipal.push(Palabra);
+                cout<< "\tPalabra introducida: "<< ColaPrincipal.back();
+                NumeroValores = NumeroValores + 1;
+                NumeroElementosPrincipal = ColaPrincipal.size();
+            break;
+
+            case 2:
+            //[2.1] REGISTRO DEL DATO DENTRO DE COLA AUXILIAR
+                cout<< "\n\tIngrese el dato: "; cin>> Palabra;
+                ColaAuxiliar.push(Palabra);
+                cout<< "\tPalabra introducida: "<< ColaAuxiliar.back();
+                NumeroValores = NumeroValores + 1;
+                NumeroElementosSecundario = ColaAuxiliar.size();
+            break;
+
+            case 3:
+            //[3.1] REGISTRO DE LA POSICION DEL DATO DENTRO DE LA COLA
+                cout<< "\n\tIngrese la posicion a agregar: "; cin>> Posicion;
+
+//                NumeroElementosPrincipal = ColaPrincipal.size();
+//                NumeroElementosSecundario = ColaAuxiliar.size();
+
+            //[3.2] UNION DE LA COLA PRINCIPALE Y LA AUXILIAR
+                for(int i = NumeroElementosPrincipal + 1; i <= NumeroValores; i++)
+                {
+                    ColaPrincipal.push(ColaAuxiliar.front());
+                    ColaAuxiliar.pop();
+                }
+
+            //[3.3] PASAMOS LOS DATOS DENTRO DE LA COLA A LA COLA SECUNDARIA
+                for(int i = 1; i <= NumeroValores; i++)
+                {
+                    ColaPrincipalAuxiliar.push(ColaPrincipal.front());
+                    ColaPrincipal.pop();
+                }
+
+            //[3.4] REGISTRO DEL VALOR
+                cout<< "\n\tIngrese el dato: "; cin>> Palabra;
+                NumeroValores = NumeroValores + 1;
+
+            //[3.5] REGRESAMOS LOS VALORES DE LA COLA AUXILIAR A LA PRINCIPAL
+                for(int i = 1; i <= NumeroValores; i++)
+                {
+                //[3.5.1] SI LA POSICION ES IGUAL AL CONTADOR, SE COLOCA EL VALOR DADO
+                    if(i == Posicion)
+                    {
+                        ColaPrincipal.push(Palabra);
+                    }
+
+                //[3.5.2] DE LO CONTRARÍO, SE PASA LA COLA NORMALMENTE
+                    else
+                    {
+                        ColaPrincipal.push(ColaPrincipalAuxiliar.front());
+                        ColaPrincipalAuxiliar.pop();
+                    }
+                    cout<< endl;
+                    cout<< " "<< ColaPrincipal.back();
+                }
+
+            //[3.6] ESTABLECEMOS VALORES PARA CADA COLA
+                if(Posicion <= NumeroElementosPrincipal) {NumeroElementosPrincipal++;}
+                else {NumeroElementosSecundario++;}
+
+            //[3.7] PASAMOS LOS VALORES DE LA COLA PRINCIPAL A SU PROPIA AUXILIAR CON TAL DE GUARDARLO
+                for(int i = 1; i <= NumeroElementosPrincipal; i++)
+                {
+                    ColaPrincipalAuxiliar.push(ColaPrincipal.front());
+                    ColaPrincipal.pop();
+                }
+
+            //[3.8] EL RESTO SE PASA A LA AUXILIAR
+                cout<< "\n\nAuxiliar: ";
+                for(int i = NumeroElementosPrincipal + 1; i <= NumeroValores; i++)
+                {
+                    ColaAuxiliar.push(ColaPrincipal.front());
+                    ColaPrincipal.pop();
+                }
+
+            //[3.8] REGRESAMOS LOS VALORES A LA COLA PRINCIPAL
+                cout<< "\n\nPrincipal: ";
+                for(int i = 1; i <= NumeroElementosPrincipal; i++)
+                {
+                    ColaPrincipal.push(ColaPrincipalAuxiliar.front());
+                    ColaPrincipalAuxiliar.pop();
+                }
+
+            break;
+
+            case 4:
+            //[4.1] UNIMOS TODAS LAS COLAS GENERADAS EN CASO DE EXISTIR
+            if(ColaAuxiliar.empty() == 0)   //Si no está vacia la cola secundaria, entonces...
+            {
+                cout<< NumeroElementosPrincipal<< endl;
+                for(int i = NumeroElementosPrincipal + 1; i <= NumeroValores; i++)
+                {
+                    cout<< "AAA"<< endl;
+                    ColaPrincipal.push(ColaAuxiliar.front());
+                    ColaAuxiliar.pop();
+                }
+            }
+
+            //[4.2] IMPRIMIMOS LA COLA GENERAL
+            cout<<"\n\tImpresion de cola [INICIO - FIN]"<< endl;
+                for(int i = 1; i <= NumeroValores; i++)
+                {
+                    ColaPrincipalAuxiliar.push(ColaPrincipal.front());
+                    cout<<"\t\t["<< i<< "]. "<< ColaPrincipalAuxiliar.back()<< endl;
+                    ColaPrincipal.pop();
+                }
+
+            //[4.3] REGRESAMOS LOS VALORES A LA COLA PRINCIPAL
+                cout<< "\n\nPrincipal: "<< NumeroElementosPrincipal<< endl;
+                for(int i = 1; i <= NumeroElementosPrincipal; i++)
+                {
+                    ColaPrincipal.push(ColaPrincipalAuxiliar.front());
+                    cout<< endl<< " "<< ColaPrincipalAuxiliar.front();
+                    ColaPrincipalAuxiliar.pop();
+                }
+
+            //[4.4] REGRESAMOS LOS VALORES A LA COLA AUXILIAE
+                cout<< "\n\nAuxiliar: ";
+                for(int i = NumeroElementosPrincipal + 1; i <= NumeroValores; i++)
+                {
+                    ColaAuxiliar.push(ColaPrincipalAuxiliar.front());
+                    cout<< endl<< " "<< ColaAuxiliar.back();
+                    ColaPrincipalAuxiliar.pop();
+                }
+            break;
+
+            case 5:
+            //[5.1] UNIMOS TODAS LAS COLAS GENERADAS EN CASO DE EXISTIR
+            if(ColaAuxiliar.empty() == 0)   //Si no está vacia la cola secundaria, entonces...
+            {
+                cout<< NumeroElementosPrincipal<< endl;
+                for(int i = NumeroElementosPrincipal + 1; i <= NumeroValores; i++)
+                {
+                    cout<< "AAA"<< endl;
+                    ColaPrincipal.push(ColaAuxiliar.front());
+                    ColaAuxiliar.pop();
+                }
+            }
+
+            //[5.2] CAMBIAMOS EL ORDEN
+                cout<<"\n\tImpresion de cola [FIN - INICIO]"<< endl;
+                CambiarOrden(ColaPrincipal, ColaAuxiliar, NumeroValores);
+                RegresarOrden(ColaPrincipal, ColaAuxiliar);
+
+//
+//            //[5.3] REGRESAMOS LOS VALORES A LA COLA PRINCIPAL SECUNDARIA, ESTO SÓLO PARA APARTARLOS Y MOVER LOS OTROS
+//                for(int i = 1; i <= NumeroElementosPrincipal; i++)
+//                {
+//                    ColaPrincipalAuxiliar.push(ColaPrincipal.front());
+//                    cout<< endl<< " "<< ColaPrincipal.front();
+//                    ColaPrincipal.pop();
+//                }
+//
+//            //[5.4] REGRESAMOS LOS VALORES A LA COLA AUXILIAR
+//                for(int i = 1; i <= NumeroElementosPrincipal; i++)
+//                {
+//                    ColaPrincipal.push(ColaPrincipalAuxiliar.front());
+//                    ColaPrincipalAuxiliar.pop();
+//                }
+
+            //[5.3] REGRESAMOS LOS VALORES A LA COLA AUXILIAE
+                cout<< "\n\nAuxiliar: ";
+                for(int i = NumeroElementosPrincipal + 1; i <= NumeroValores; i++)
+                {
+                    ColaAuxiliar.push(ColaPrincipal.front());
+                    ColaPrincipal.pop();
+                }
+            break;
+
+
+
+            case 6:
+
+            break;
+
+            case 7:
+            break;
+
+            case 8:
+            break;
+
+            case 9:
+            break;
+
+        }
+        cout<< "\n\n\t";
+        system("pause");
+    }   while(Respuesta != 9);
+	return 0;
+}
+
+void CambiarOrden(queue<string>Primario, queue<string>Secundario, int NumeroValores)
+{
+    if(Primario.size() >= 1)
+    {
+        string ValorGuardado = Primario.front();
+        Primario.pop();
+        CambiarOrden(Primario, Secundario, NumeroValores);
+        Secundario.push(ValorGuardado);
+        cout<< "\t\t["<< NumeroValores<< "]: "<< Secundario.back()<< endl;
+        NumeroValores--;
+    }
+}
+
+void RegresarOrden(queue<string>Primario, queue<string>Secundario)
+{
+    if(Primario.size() >= 1)
+    {
+        string ValorGuardado = Primario.front();
+        Primario.pop();
+        RegresarOrden(Primario, Secundario);
+        Secundario.push(ValorGuardado);
+    }
+
+}
